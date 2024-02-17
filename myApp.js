@@ -1,24 +1,35 @@
 const express = require('express');
 const app = express();
+const helmet = require('helmet');
+const bcrypt = require('bcrypt');
+
+commented to use the helmet's middleware, passing single configuration object
+app.use(helmet.hidePoweredBy())
+
+// disable webpage to be rendered in external frames 
+app.use(helmet.frameguard({action: 'deny'}))
+
+app.use(helmet.xssFilter())
+app.use(helmet.noSniff())
+app.use(helmet.ieNoOpen())
 
 
+ninetyDaysInSeconds = 90*24*60*60;
+hstsConfig = {maxAge: ninetyDaysInSeconds, force: true}
+// app.use(helmet.hsts(hstsConfig))
 
+// dns prefatch controll 
+app.use(helmet.dnsPrefetchControl())
 
+// disable client cache, comment if client cache is required
+app.use(helmet.noCache())
 
+// list of allowed sources to load scripts, stylesheets, fonts, frames, media,
+directives = {defaultSrc: ["'self'"], scriptSrc: ["'self'", 'trusted-cdn.com']}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+// set Content security policy
+// protect app from XSS vulnerabilities, undesired tracking, malicious frames etc.
+app.use(helmet.contentSecurityPolicy({directives: directives}))
 
 
 
